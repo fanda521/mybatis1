@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--<mapper namespace="com.kp.entity.User">-->
+<!--接口的类全名-->
+<mapper namespace="com.kp.many2many.Many2ManyMapper">
+
+    <!-- 保存权限 -->
+    <insert id="savePrivelege" parameterType="Privelege" useGeneratedKeys="true" keyColumn="pid" keyProperty="pid">
+			insert into privelege(pname) values(#{pname});
+		</insert>
+    <!-- 保存权组 -->
+    <insert id="saveGroups" parameterType="Groups" useGeneratedKeys="true" keyColumn="gid" keyProperty="gid">
+			insert into groups(gname) values(#{gname});
+		</insert>
+    <!-- 保存关系，用来描述组中拥有哪些权限   values(#{gid},#{pid})  声明方法是给定2个key   gid    pid-->
+    <insert id="savePriRelGroups" >
+			insert into gro_pri(gid,pid) values(#{gid},#{pid});
+	</insert>
+
+</mapper>

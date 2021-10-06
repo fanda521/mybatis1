@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--<mapper namespace="com.kp.entity.User">-->
+<!--接口的类全名-->
+<mapper namespace="com.kp.ono2one.One2OneMapper">
+
+    <resultMap id="persons" type="Person">
+        <!--列和属性的对应关系-->
+        <id column="pid" property="pid"></id>
+        <result column="pname" property="pname"></result>
+        <!--property="idCard" person类中的属性名  column="pid" idcard表中外键的名称-->
+        <association property="idCard" column="pid" javaType="IdCard">
+            <id column="cid" property="cid"></id>
+            <result column="cnum" property="cnum"></result>
+        </association>
+    </resultMap>
+
+    <!--连接查询 查询人同时，将身份证的信息一起查询出来-->
+    <select id="selectPersonById" resultMap="persons" >
+        select p.pid,p.pname,c.cid,c.cnum from person  p inner join idcard c on p.pid = c.pid
+    </select>
+
+    <!--保存-->
+    <insert id="savePerson" parameterType="Person" useGeneratedKeys="true" keyProperty="pid" keyColumn="pid">
+        insert into person(pname) values(#{pname})
+    </insert>
+    <insert id="saveIdCard" parameterType="Person" useGeneratedKeys="true" keyProperty="idCard.cid" keyColumn="cid">
+        insert into idcard(cnum,pid) values(#{idCard.cnum},#{pid})
+    </insert>
+
+</mapper>

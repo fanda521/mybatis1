@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--<mapper namespace="com.kp.entity.User">-->
+<!--接口的类全名-->
+<mapper namespace="com.kp.many2one.Many2OneMapper">
+
+    <resultMap id="depts" type="Dept">
+        <id property="did" column="did"></id>
+        <result column="dname" property="dname"></result>
+        <!-- //描述一对多的关系
+    private List<Emp> emps = new ArrayList<Emp>();-->
+        <collection property="emps" javaType="Emp" column="did">
+            <id property="eid" column="eid"></id>
+            <result column="ename" property="ename"></result>
+            <!-- //描述多对一的关系
+    private Dept dept;-->
+            <association property="dept" javaType="Dept">
+                <id property="did" column="did"></id>
+                <result column="dname" property="dname"></result>
+            </association>
+        </collection>
+    </resultMap>
+
+    <!-- 查询所有的部门，并且包含该部门下所有的员工 -->
+    <select id="selectDepts" resultMap="depts">
+				select d.did,d.dname,e.ename,e.eid from dept d left join emp e on d.did = e.did
+	</select>
+
+    <!--void saveDept(Dept dept);
+    void saveEmp(Dept dept);-->
+    <insert id="saveDept" useGeneratedKeys="true" keyProperty="did" keyColumn="did">
+        insert  into dept(dname) values (#{dname})
+    </insert>
+<!--private List<Emp> emps = new ArrayList<Emp>(); void saveEmp(Emp emp);-->
+    <insert id="saveEmp" useGeneratedKeys="true" keyProperty="eid" keyColumn="eid">
+        insert  into emp(ename,did) values (#{ename},#{dept.did})
+    </insert>
+
+    <resultMap type="Groups" id="listGroups">
+        <id column="gid" property="gid"/>
+        <result column="gname" property="gname"/>
+        <collection property="pris" javaType="Privelege" ofType="Privelege">
+            <id column="pid" property="pid"/>
+            <result column="pname" property="pname"/>
+        </collection>
+    </resultMap>
+
+    <!-- 查询每个组中所有的权限 -->
+    <select id="selectGroupPri"  resultMap="listGroups">
+		select g.gid,g.gname,p.pid,p.pname from groups g inner join gro_pri gp on g.gid = gp.gid
+							   inner join privelege p on  gp.pid = p.pid
+
+	</select>
+</mapper>
